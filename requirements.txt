@@ -1,0 +1,16 @@
+annotated-types==0.8.0
+lance-namespace==0.13.0
+lance-namespace-urllib3-client==0.13.0
+numpy==2.5.4
+pandas==3.0.6
+pyarrow==26.0.1
+pydantic==2.14.2
+pydantic_core==2.50.2
+pylance==14.0.2
+pyserial==3.5
+python-dateutil==2.9.0.post0
+six==1.17.0
+typing-inspection==0.4.5
+typing_extensions==4.16.0
+tzdata==2026.5
+urllib3==2.8.0
