@@ -161,10 +161,16 @@ class VentanaPartenon(QMainWindow):
         )
         self.tabla_pupilos.setAlternatingRowColors(True)
         self.tabla_pupilos.verticalHeader().setVisible(False)
-        self.tabla_pupilos.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
+        header = self.tabla_pupilos.horizontalHeader()
+        header.setDefaultAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
-        self.tabla_pupilos.setShowGrid(False)
+        header.setMinimumSectionSize(80)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        self.tabla_pupilos.setShowGrid(True)
 
         table_layout.addWidget(table_title)
         table_layout.addWidget(table_hint)
@@ -303,6 +309,7 @@ class VentanaPartenon(QMainWindow):
                 border: 1px solid #E7E8E3;
                 border-radius: 6px;
                 color: #263447;
+                gridline-color: #D7DCE0;
                 font-size: 11px;
                 selection-background-color: #E8EDF1;
                 selection-color: #17263A;
