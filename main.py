@@ -1,8 +1,23 @@
-from database.conexion import inicializar_bd
-from database.crud_pupilos import obtener_pupilos
+import sys
+from PySide6.QtWidgets import QApplication
 
-# Crear la base de datos y la tabla si no existen
-inicializar_bd()
+# Importamos la ventana de Gabriel y el controlador de Pablo
+from ui.ventana_partenon import VentanaPartenon
+from controllers.controlador_main import ControladorPartenon
 
-# Probar la lectura
-print("Pupilos registrados:", obtener_pupilos())
+def iniciar_sistema():
+    app = QApplication(sys.argv)
+    
+    # 1. Creamos la interfaz visual (Gabriel)
+    ventana = VentanaPartenon()
+    
+    # 2. Le inyectamos la lógica y conexión a BD (Pablo y Antonio)
+    controlador = ControladorPartenon(ventana)
+    
+    # 3. Mostramos la ventana
+    ventana.show()
+    
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    iniciar_sistema()
