@@ -7,7 +7,7 @@ class ControladorMain:
         self.ventana = ventana
         
         # Enlazar el botón a la acción de procesar
-        self.ventana.boton_guardar.clicked.connect(self.procesar_registro)
+        self.ventana.boton_registrar.clicked.connect(self.procesar_registro)
         
         # Ejecutar el refresco apenas se abre la ventana
         self.refrescar_tabla()
