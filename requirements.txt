@@ -3,6 +3,7 @@ lance-namespace==0.13.0
 lance-namespace-urllib3-client==0.13.0
 numpy==2.5.4
 pandas==3.0.6
+PySide6==6.12.0
 pyarrow==26.0.1
 pydantic==2.14.2
 pydantic_core==2.50.2
