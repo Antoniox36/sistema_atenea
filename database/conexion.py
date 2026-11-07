@@ -30,3 +30,6 @@ def inicializar_bd():
             print(f"Error al inicializar la base de datos: {e}")
         finally:
             conexion.close()
+
+# Ejecuta la inicialización de la tabla automáticamente al importar el módulo
+inicializar_bd()
