@@ -5,3 +5,6 @@ __pycache__/
 .vscode/
 *.db
 *.sqlite3
+analytics/*.png
+.DS_Store
+Thumbs.db
