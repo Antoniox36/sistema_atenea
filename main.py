@@ -11,12 +11,10 @@ from controllers.controlador_login import ControladorLogin
 def iniciar_sistema():
     app = QApplication(sys.argv)
     
-    # 1. Instanciamos la ventana de login y su respectiva vista
+    # 1. Instanciamos la ventana de login
     ventana_login = VentanaLogin()
     
-    # 2. Instanciamos el controlador de login, pasándole la ventana
-    # Nota: El controlador de login debe encargarse de ocultar esta ventana 
-    # y abrir la VentanaPartenon + ControladorMain al autenticar con éxito.
+    # 2. Instanciamos el controlador de login (que ya valida con la seguridad de Samuel)
     controlador_login = ControladorLogin(ventana_login)
     
     # 3. Mostramos la ventana de inicio de sesión
