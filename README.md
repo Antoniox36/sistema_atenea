@@ -5,7 +5,7 @@
 **Sistema Académico y de Gestión de Tutorías**  
 *«El conocimiento construye el futuro»*
 
-[![Estado del Prototipo](https://img.shields.io/badge/Estado-Prototipo%201%20(Activo)-blue?style=for-the-badge&logo=git&logoColor=white)](https://github.com/)
+[![Estado](https://img.shields.io/badge/Estado-Prototipo%201-blue?style=for-the-badge&logo=git&logoColor=white)](https://github.com/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
 [![PySide6](https://img.shields.io/badge/PySide6-GUI-41CD52?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qtforpython/)
 [![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
@@ -14,129 +14,183 @@
 
 ---
 
-## 📌 Descripción General del Proyecto
+## 📌 Descripción
 
-**Sistema Atenea** es una solución de software de escritorio modular diseñada para optimizar y automatizar el registro, la administración y el control de pupilos (estudiantes) en entornos académicos y de tutoría. 
+**Sistema Atenea** es una aplicación de escritorio modular para registrar, administrar y consultar a los **pupilos** (estudiantes) atendidos en un entorno de tutorías académicas.
 
-Desarrollado bajo una arquitectura limpia y desacoplada en **Python**, este **Prototipo 1** integra de manera armónica bases de datos locales relacionales, interfaces gráficas modernas y flotantes sin marcos nativos, validaciones estrictas de datos, un robusto sistema de autenticación cifrada mediante *SHA-256*, y un módulo analítico integrado con *Pandas* y *Matplotlib* para la generación de estadísticas institucionales.
-
-> ⚠️ **Nota del Prototipo:** Este repositorio corresponde a la **Fase de Prototipo 1** (entrega programada para el 15 de noviembre de 2026). Las funcionalidades principales de persistencia local, seguridad en accesos, interfaces visuales y reportes estadísticos ya se encuentran totalmente operativas y probadas.
+Este **Prototipo 1** (Laboratorio 1, entrega: 15 de noviembre de 2026) demuestra la base técnica del sistema: una arquitectura por capas desarrollada en equipo, persistencia local en SQLite, acceso protegido con hashes SHA-256, una interfaz moderna sin marcos nativos y un módulo de estadísticas con Pandas y Matplotlib.
 
 ---
 
-## 👥 Estructura del Equipo y División de Módulos
+## ✨ Funcionalidades del Prototipo 1
 
-Para garantizar un control de versiones fluido y evitar conflictos de integración en Git, el desarrollo se ha estructurado estrictamente por responsabilidades modulares:
-
-| Integrante | Módulo / Capas | Responsabilidad Principal |
-| :--- | :--- | :--- |
-| **Antonio** *(Coordinador)* | `database/`, `docs/`, `main.py` | Configuración y esquema relacional en SQLite, orquestación del flujo principal y documentación técnica. |
-| **Gabriel** | `ui/` | Maquetación Frontend, diseño de ventanas flotantes modernas (`FramelessWindowHint`) y barras de navegación en PySide6. |
-| **Pablo** | `controllers/` | Controladores de eventos, lógica de navegación entre pantallas, integración de datos y validadores estrictos. |
-| **Samuel** | `security/` | Módulo de criptografía, hashing unidireccional con SHA-256 y protección contra ataques de temporización (`hmac`). |
-| **Fredy** | `analytics/` | Procesamiento de datos estadísticos con Pandas y renderizado de gráficos vectoriales mediante Matplotlib. |
+| Funcionalidad | Estado |
+| :--- | :---: |
+| Inicio de sesión con contraseñas protegidas (SHA-256 + `hmac.compare_digest`) | ✅ |
+| Mensajes de error y confirmación en pantalla; acceso con la tecla Enter | ✅ |
+| Registro de pupilos (carnet, nombre, carrera y ciclo) con validación de datos | ✅ |
+| Listado de pupilos sincronizado con la base de datos SQLite | ✅ |
+| Estadísticas de pupilos por carrera o por ciclo (gráfico de barras) | ✅ |
+| Gestión de tutores y sesiones de tutoría | 🔜 Prototipo 2 |
+| Edición y eliminación de pupilos | 🔜 Prototipo 2 |
+| Base de datos compartida y usuarios por integrante (MySQL) | 🔜 Prototipo 2 |
 
 ---
 
-## 📂 Arquitectura del Repositorio
+## 🖼️ Vista previa
 
-La disposición de los directorios sigue un estándar riguroso de separación de incumbencias:
+<div align="center">
+
+| Inicio de sesión | El Partenón (panel principal) | Estadísticas |
+| :---: | :---: | :---: |
+| <img src="docs/img/login.png" width="260" alt="Pantalla de inicio de sesión"> | <img src="docs/img/partenon.png" width="260" alt="Panel de administración El Partenón"> | <img src="docs/img/grafico.png" width="260" alt="Gráfico de pupilos por carrera"> |
+
+</div>
+
+---
+
+## 🧱 Arquitectura
+
+El sistema separa responsabilidades en capas independientes. La interfaz nunca toca la base de datos: todo pasa por los controladores.
+
+```mermaid
+flowchart LR
+    M["main.py"] --> UI["ui/<br>PySide6"]
+    M --> C["controllers/<br>eventos y validación"]
+    UI <--> C
+    C --> S["security/<br>SHA-256 + HMAC"]
+    C --> D["database/<br>SQLite"]
+    A["analytics/<br>Pandas + Matplotlib"] --> D
+```
 
 ```text
 sistema_atenea/
-├── main.py                     # Punto de entrada y orquestador global del sistema
-├── requirements.txt            # Dependencias externas del entorno virtual
-├── README.md                   # Documentación oficial y carta de presentación
-├── sistema_atenea.db           # Base de datos local SQLite (generada automáticamente)
+├── main.py                     # Punto de entrada y orquestador del sistema
+├── requirements.txt            # Dependencias del proyecto
+├── README.md                   # Esta página
+├── sistema_atenea.db           # Base de datos SQLite (se genera al ejecutar)
 │
-├── database/                   # CAPA DE DATOS (Antonio)
-│   ├── __init__.py
-│   ├── conexion.py             # Conexión y creación de tablas relacionales
-│   └── crud_pupilos.py         # Sentencias SQL para inserción y consultas
+├── database/                   # CAPA DE DATOS
+│   ├── conexion.py             # Conexión y creación de tablas
+│   └── crud_pupilos.py         # Inserción y consulta de pupilos
 │
-├── ui/                         # CAPA DE INTERFAZ GRÁFICA (Gabriel)
-│   ├── __init__.py
-│   ├── ventana_login.py        # Pantalla de acceso institucional corporativa
-│   └── ventana_partenon.py     # Panel de administración principal (El Partenón)
+├── ui/                         # CAPA DE INTERFAZ
+│   ├── ventana_login.py        # Pantalla de acceso
+│   └── ventana_partenon.py     # Panel principal (El Partenón)
 │
-├── controllers/                # CAPA DE CONTROLADORES Y LÓGICA (Pablo)
-│   ├── __init__.py
-│   ├── controlador_login.py    # Gestión de eventos y autenticación del acceso
-│   ├── controlador_main.py     # Puente de datos entre la tabla visual y SQLite
-│   └── validaciones.py         # Filtrado de errores y tipos de datos (bloque try/except)
+├── controllers/                # CAPA DE CONTROLADORES
+│   ├── controlador_login.py    # Eventos y autenticación del acceso
+│   ├── controlador_main.py     # Puente entre la tabla visual y SQLite
+│   └── validaciones.py         # Validación de los datos del formulario
 │
-├── security/                   # CAPA DE SEGURIDAD (Samuel)
-│   ├── __init__.py
-│   └── auth_manager.py         # Cifrado SHA-256, HMAC y verificación de credenciales
+├── security/                   # CAPA DE SEGURIDAD
+│   ├── auth_manager.py         # Hashing SHA-256 y verificación de credenciales
+│   └── documentacion.txt       # Manual técnico del módulo
 │
-├── analytics/                  # CAPA ANALÍTICA Y REPORTES (Fredy)
-│   ├── __init__.py
-│   └── graficos_progreso.py    # Procesamiento con Pandas y gráficos de Matplotlib
+├── analytics/                  # CAPA ANALÍTICA
+│   └── graficos_progreso.py    # Estadísticas con Pandas y Matplotlib
 │
-└── docs/                       # RECURSOS Y DOCUMENTACIÓN (Antonio)
-    ├── informe_laboratorio1.md # Reporte técnico del prototipo
-    └── manual_usuario.md       # Guía de uso rápido para el usuario final
+└── docs/                       # DOCUMENTACIÓN
+    ├── informe_laboratorio1.md # Informe técnico del prototipo
+    └── manual_usuario.md       # Guía de uso para el usuario final
 ```
 
 ---
 
-## ⚙️ Guía de Instalación y Configuración
+## ⚙️ Instalación
 
-Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local:
+Requiere **Python 3.10 o superior**.
 
-### 1. Clonar el repositorio
 ```bash
+# 1. Clonar el repositorio
 git clone https://github.com/tu-usuario/sistema_atenea.git
 cd sistema_atenea
-```
 
-### 2. Crear y activar un entorno virtual
-* **En Windows (CMD / PowerShell):**
-  ```bash
-  python -m venv venv
-  venv\Scripts\activate
-  ```
-* **En macOS / Linux:**
-  ```bash
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
+# 2. Crear y activar un entorno virtual
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # macOS / Linux
 
-### 3. Instalar las dependencias del proyecto
-```bash
+# 3. Instalar las dependencias
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🚀 Guía de Ejecución
+## 🚀 Uso
 
-### A. Iniciar la aplicación completa (Sistema de Login + Panel de Administración)
-Ejecuta el orquestador principal desde la raíz del proyecto:
+### Aplicación principal
+
+Ejecuta siempre desde la **raíz del proyecto**:
+
 ```bash
 python main.py
 ```
 
-* **Credenciales de Acceso Autorizadas (Protegidas con SHA-256):**
-  * **Usuario 1:** `admin` | **Contraseña:** `1234`
-  * **Usuario 2:** `tutor` | **Contraseña:** `admin`
+Credenciales de demostración (solo para esta fase académica):
 
-Una vez autenticado con éxito, se abrirá de forma automática la interfaz principal de administración (**El Partenón**), donde podrás registrar pupilos en tiempo real y ver su sincronización directa con la base de datos local SQLite.
+| Usuario | Contraseña |
+| :--- | :--- |
+| `admin` | `1234` |
+| `tutor` | `admin` |
 
-### B. Ejecutar el módulo analítico independiente
-Para generar estadísticas visuales de los estudiantes registrados (por carrera o ciclo académico) utilizando Pandas y Matplotlib, ejecuta el script de analítica desde la terminal:
+Al ingresar se abre **El Partenón**, donde puedes registrar pupilos y verlos en la tabla al instante.
 
-* **Ver gráfico interactivo en ventana flotante (agrupado por carrera):**
-  ```bash
-  python analytics/graficos_progreso.py --campo carrera --mostrar
-  ```
-* **Ver gráfico interactivo agrupado por ciclo:**
-  ```bash
-  python analytics/graficos_progreso.py --campo ciclo --mostrar
-  ```
-* *Nota:* Si ejecutas el script sin la bandera `--mostrar`, este compilará y guardará automáticamente un reporte gráfico optimizado (`reporte_pupilos.png`) dentro de la carpeta `analytics/`.
+### Módulo de estadísticas
+
+```bash
+# Agrupado por carrera
+python analytics/graficos_progreso.py --campo carrera
+
+# Agrupado por ciclo, mostrando además el gráfico en una ventana
+python analytics/graficos_progreso.py --campo ciclo --mostrar
+```
+
+El script **siempre** guarda el gráfico como `analytics/reporte_pupilos.png`; con `--mostrar` además lo abre en una ventana interactiva.
 
 ---
+
+## 👥 Equipo
+
+Cada integrante se responsabilizó de una capa, lo que permitió trabajar en paralelo en Git sin conflictos de integración.
+
+| Integrante | Capa | Responsabilidad |
+| :--- | :--- | :--- |
+| **Antonio** *(Coordinador)* | `database/`, `docs/`, `main.py` | Esquema relacional en SQLite, orquestación del flujo principal y documentación técnica. |
+| **Gabriel** | `ui/` | Interfaz en PySide6: ventanas flotantes sin marcos nativos y barras de navegación. |
+| **Pablo** | `controllers/` | Controladores de eventos, navegación entre pantallas, validaciones y mensajes al usuario. |
+| **Samuel** | `security/` | Hashing SHA-256 y comparación segura de credenciales con `hmac`. |
+| **Fredy** | `analytics/` | Procesamiento con Pandas y gráficos con Matplotlib. |
+
+---
+
+## ⚠️ Alcance y limitaciones del Prototipo 1
+
+- La base de datos es **local** (un archivo SQLite en el equipo que ejecuta el sistema).
+- Los usuarios de acceso están definidos en el código y sus contraseñas usan SHA-256 **sin sal**: suficiente para una demostración, no para producción.
+- El sistema gestiona únicamente **pupilos**; aún no incluye tutores ni sesiones de tutoría.
+- La ruta de la base de datos es relativa: el sistema debe ejecutarse desde la raíz del proyecto.
+
+---
+
+## 🗺️ Hoja de ruta (Prototipo 2)
+
+- [ ] Migrar la persistencia a **MySQL** (administrado con Workbench) con usuarios de acceso por integrante.
+- [ ] Guardar los usuarios del sistema en la base de datos, con hash y sal (PBKDF2 o scrypt).
+- [ ] Incorporar las entidades **tutor** y **sesión de tutoría**, y la asignación pupilo–tutor.
+- [ ] Permitir editar y eliminar registros.
+- [ ] Agregar pruebas automatizadas y configuración de conexión mediante variables de entorno.
+
+---
+
+## 📚 Documentación
+
+- [Informe de Laboratorio 1](docs/informe_laboratorio1.md)
+- [Manual de usuario](docs/manual_usuario.md)
+- [Módulo de seguridad](security/documentacion.txt)
+
+---
+
 <div align="center">
-  <small>Desarrollado con dedicación por el equipo de ingeniería para la entrega del Prototipo 1 — Noviembre 2026.</small>
+  <small>Desarrollado por el equipo de ingeniería para la entrega del Prototipo 1 — Noviembre 2026.</small>
 </div>
