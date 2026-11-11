@@ -103,7 +103,7 @@ Requiere **Python 3.10 o superior**.
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/sistema_atenea.git
+git clone https://github.com/Antoniox36/sistema_atenea.git
 cd sistema_atenea
 
 # 2. Crear y activar un entorno virtual
