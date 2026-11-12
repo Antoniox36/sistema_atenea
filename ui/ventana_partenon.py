@@ -253,6 +253,7 @@ class VentanaPartenon(QMainWindow):
         content_layout.addWidget(workspace, 1)
 
         app_layout.addWidget(self.sidebar)
+        self.sidebar.hide()
         app_layout.addWidget(content, 1)
 
         root.addWidget(app_container)
