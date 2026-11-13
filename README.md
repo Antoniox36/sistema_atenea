@@ -183,14 +183,6 @@ Cada integrante se responsabilizó de una capa, lo que permitió trabajar en par
 
 ---
 
-## 📚 Documentación
-
-- [Informe de Laboratorio 1](docs/informe_laboratorio1.md)
-- [Manual de usuario](docs/manual_usuario.md)
-- [Módulo de seguridad](security/documentacion.txt)
-
----
-
 <div align="center">
   <small>Desarrollado por el equipo de ingeniería para la entrega del Prototipo 1 — Noviembre 2026.</small>
 </div>
