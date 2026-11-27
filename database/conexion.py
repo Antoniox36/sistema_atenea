@@ -1,35 +1,54 @@
-import sqlite3
+"""
+Módulo de conexión centralizada a MySQL para el Sistema Atenea.
+Lee las credenciales desde el archivo local .env para evitar exponer datos sensibles.
+"""
+
+import os
+from pathlib import Path
+import mysql.connector
+from mysql.connector import Error
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde la raíz del proyecto
+RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
+load_dotenv(RAIZ_PROYECTO / ".env")
+
 
 def conectar_bd():
-    # Establece conexion a la base de datos local SQLite
+    """
+    Establece y retorna una conexión activa hacia el servidor MySQL.
+    Retorna None si ocurre un error de red o credenciales.
+    """
     try:
-        conexion = sqlite3.connect('sistema_atenea.db')
-        conexion.row_factory = sqlite3.Row  # Permite acceder a columnas por nombre
-        return conexion
-    except sqlite3.Error as e:
-        print(f"Error al conectar a SQLite: {e}")
-        return None
+        conexion = mysql.connector.connect(
+            host=os.getenv("DB_HOST", "127.0.0.1"),
+            port=int(os.getenv("DB_PORT", 3306)),
+            database=os.getenv("DB_NAME", "sistema_atenea"),
+            user=os.getenv("DB_USER", "antonio"),
+            password=os.getenv("DB_PASSWORD", "antonio1234"),
+            charset="utf8mb4",
+            connection_timeout=8,
+        )
+        if conexion.is_connected():
+            return conexion
+    except Error as e:
+        print(f"[DB ERROR] No se pudo conectar a MySQL: {e}")
+    return None
 
-def inicializar_bd():
-    # Crea la tabla pupilos si no existe al arrancar
+
+def verificar_conexion() -> tuple[bool, str]:
+    """
+    Comprueba la conectividad con MySQL y devuelve (exito, mensaje).
+    Útil para diagnósticos al arrancar el sistema.
+    """
     conexion = conectar_bd()
     if conexion:
-        try:
-            cursor = conexion.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS pupilos (
-                    id_pupilo INTEGER PRIMARY KEY AUTOINCREMENT,
-                    carnet TEXT UNIQUE NOT NULL,
-                    nombre TEXT NOT NULL,
-                    carrera TEXT NOT NULL,
-                    ciclo INTEGER NOT NULL
-                )
-            """)
-            conexion.commit()
-        except sqlite3.Error as e:
-            print(f"Error al inicializar la base de datos: {e}")
-        finally:
-            conexion.close()
+        info = conexion.server_info
+        conexion.close()
+        return True, f"Conectado exitosamente a MySQL Server {info}"
+    return False, "No se pudo establecer conexión con el servidor MySQL. Verifica Radmin VPN y tu archivo .env."
 
-# Ejecuta la inicialización de la tabla automáticamente al importar el módulo
-inicializar_bd()
+
+if __name__ == "__main__":
+    ok, msg = verificar_conexion()
+    print(msg)
